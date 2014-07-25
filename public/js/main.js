@@ -4,6 +4,8 @@ $(function() {
       evaluate: /\{\{(.+?)\}\}/g
   };
 
+  var qrCode = new QRCode('qrCode');
+
   var Rippler = Backbone.Model.extend({
     lookup: function(name) {
       var self = this;
@@ -35,6 +37,7 @@ $(function() {
 
   function showRippler(rippler) {
     $('#centerContainer').html(showNameTemplate(rippler));
+    qrCode.makeCode(rippler.address);
   }
 
   function handleSubmit(event) {
