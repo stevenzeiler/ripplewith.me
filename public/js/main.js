@@ -6,8 +6,6 @@ $(function() {
 
   var Rippler = Backbone.Model.extend({
     lookup: function(name) {
-      console.log('lookup name', name);
-      console.log('lookup name', name);
       var self = this;
       this.fetch({
         url: 'https://id.ripple.com/v1/authinfo?username='+name
@@ -42,7 +40,7 @@ $(function() {
   function handleSubmit(event) {
     event.preventDefault();
     var name = $('input[type="search"]').val();
-    rippler.lookup(name);
+    router.navigate(name, { trigger: true });
   }
 
   $('form').on('submit', handleSubmit);
