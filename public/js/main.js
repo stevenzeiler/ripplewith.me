@@ -17,10 +17,7 @@ $(function() {
 
   var rippler = new Rippler();
 
-  rippler.on('change:address', function(rippler) {
-    console.log('CHANGED!', rippler);
-    showRippler(rippler.toJSON());
-  })
+  rippler.on('change:address', showRippler);
 
   var Router = Backbone.Router.extend({
     routes: {
@@ -36,8 +33,8 @@ $(function() {
   var showNameTemplate = _.template($('#nameTemplate').html());
 
   function showRippler(rippler) {
-    $('#centerContainer').html(showNameTemplate(rippler));
-    qrCode.makeCode(rippler.address);
+    $('#centerContainer').html(showNameTemplate(rippler.toJSON()));
+    qrCode.makeCode(rippler.get('address'));
   }
 
   function handleSubmit(event) {
