@@ -8,10 +8,9 @@ $(function() {
 
   var Rippler = Backbone.Model.extend({
     lookup: function(name) {
-      var self = this;
       this.fetch({
         url: 'https://id.ripple.com/v1/authinfo?username='+name
-      })
+      });
     }
   });
 
