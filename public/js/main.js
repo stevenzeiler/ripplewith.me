@@ -46,4 +46,25 @@ $(function() {
   $('button').on('click', handleSubmit);
 
   Backbone.history.start({ pushState: true });
+
+  var websocket = new WebSocket('wss://s1.ripple.com');
+  console.log(websocket);
+
+  websocket.onmessage = function(message) {
+    try {
+      console.log(JSON.parse(message));
+    } catch(error) {
+      console.log(message, error);
+    }
+  }
+  websocket.onopen = function() {
+    websocket.send(JSON.stringify({
+      "command": "subscribe",
+      "accounts": ["r4EwBWxrx5HxYRyisfGzMto3AT8FZiYdWk"],
+      "streams": [
+        "server",
+        "ledger"
+      ]
+    })); 
+  }
 });
