@@ -12,17 +12,17 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="/css/bootstrap.min.css">
         <style>
             body {
                 padding-top: 50px;
                 padding-bottom: 20px;
             }
         </style>
-        <link rel="stylesheet" href="css/bootstrap-theme.min.css">
-        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="/css/main.css">
 
-        <script src="js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
+        <script src="/js/vendor/modernizr-2.6.2-respond-1.1.0.min.js"></script>
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -72,10 +72,16 @@
             </div><!-- /input-group -->
           </form>
           <div id='centerContainer'/></div> 
-          <div id='qrCode'/></div> 
+          <div class='accountList' id='accountInfo'>
+            <h3 id='balancesTitle' style='text-align:center'><a>Balances</a></h3>
+            <ul id='balances'></ul>
+            <h3 id='historyTitle' style='text-align:center'><a>History</a></h3>
+            <ul id='history'></ul>
+          </div>
+          <div id='qrCode'></div> 
        </div>
         <div class="col-md-4">
-        <p class=''><img style='width:280px; margin-top: 20px;text-align:center; ' src='/img/built_on_ripple.png'</p>
+          <p class=''><img style='width:280px; margin-top: 20px;text-align:center; ' src='/img/built_on_ripple.png'</p>
         </div>
       </div>
 
@@ -106,6 +112,17 @@
       <script type='text/template' id='nameTemplate'>
         <h3>~ {{= username }}</h3>
         <h5>{{= address }}</h5>
+      </script>
+      <script type='text/template' id='balanceTemplate'>
+        <li style='margin-bottom:0.5em; border-bottom: 1px solid #ccc; list-style:none; text-decoration:none'>
+          <p><b>{{= value }}</b> <span style='float:right; text-align:right'>{{= currency }}</span></p>
+          <p>{{= counterparty }}</p>
+        </li>
+      </script>
+      <script type='text/template' id='paymentTemplate'>
+        <li style='list-style:none; text-decoration:none'>
+          <a target='_blank' href='https://ripple.com/graph/#{{= hash }}'>{{= hash }}</p>
+        </li>
       </script>
     </body>
 </html>

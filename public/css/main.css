@@ -5,6 +5,34 @@
    ========================================================================== */
 
 
+.accountList {
+  margin-left: -3em; 
+}
+
+.hidden {
+  display: none;
+  color: #ccc;
+}
+
+.hidden:hover {
+  display: inline;
+}
+
+#balances {
+  opacity: 0.8;
+}
+
+#balances li, #history li {
+  display:hidden;
+}
+
+#balances:hover {
+  opacity: 1.0;
+}
+
+#balances.active {
+  color: black;
+}
 
 
 

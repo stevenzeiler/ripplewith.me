@@ -8,17 +8,27 @@ $(function() {
 
   var Balance = Backbone.Model.extend({});
   
-  var Transaction = Backbone.Model.extend({});
+  var Payment = Backbone.Model.extend({
+    parse: function(data) {
+      return data.payment;
+    }
+  });
 
   var Balances = Backbone.Collection.extend({
-    model: Balance
+    model: Balance,
+    parse: function(response) {
+      return response.balances;
+    }
   });
 
   var History = Backbone.Collection.extend({
-    model: Transaction
+    model: Payment,
+    parse: function(response) {
+      return response.payments;
+    }
   });
 
-  var rippler = (function(Balances, History) {
+  rippler = (function(Balances, History) {
     var Rippler = Backbone.Model.extend({
       lookup: function(name) {
         this.fetch({
@@ -26,13 +36,13 @@ $(function() {
         });
       },
       fetchHistory: function() {
-        this.history.fetch({
-          url: 'https://gatewayzen.com/v1/accounts/'+this.getRippleAccount()+'/payments'
+        return this.history.fetch({
+          url: '/v1/accounts/'+this.getRippleAccount()+'/payments'
         })
       },
       fetchBalances: function() {
-        this.balances.fetch({
-          url: 'https://gatewayzen.com/v1/accounts/'+this.getRippleAccount()+'/balances'
+        return this.balances.fetch({
+          url: '/v1/accounts/'+this.getRippleAccount()+'/balances'
         })
       },
       getRippleAccount: function() {
@@ -47,18 +57,48 @@ $(function() {
 
   rippler.on('change:address', showRippler);
 
+
+  var accountHistoryView = (function() {
+    var paymentTemplate = _.template($('#paymentTemplate').html());
+    var AccountHistoryView = Backbone.View.extend({
+      el: '#history',
+      render: function() {
+        var list = $('<div/>');
+        for (var i=0; i<rippler.history.models.length; i++) {
+          var payment = rippler.history.models[i];
+          list.append(paymentTemplate(payment.toJSON()));
+        }
+        this.$el.html(list.html());
+        this.$el.show();
+      }
+    });
+    return new AccountHistoryView();
+  })();
+
+
+  var accountBalancesView = (function() {
+    var balanceTemplate = _.template($('#balanceTemplate').html());
+    var AccountBalancesView = Backbone.View.extend({
+      el: '#balances',
+      render: function() {
+        var list = $('<div/>');
+        for (var i=0; i<rippler.balances.models.length; i++) {
+          var balance = rippler.balances.models[i];
+          list.append(balanceTemplate(balance.toJSON()));
+        }
+        this.$el.html(list.html());
+        this.$el.show();
+      }
+    });
+    return new AccountBalancesView();
+  })();
+
   var Router = Backbone.Router.extend({
     routes: {
-      ":name": "nameLookup",
-      ":name/balances": "accountBalances",
-      ":name/history": "accountHistory",
+      ":name": "nameLookup"
     },  
     nameLookup: function(name) {
       rippler.lookup(name);
-    },
-    accountBalances: function(account) {
-    },
-    accountHistory: function(account) {
     }
   });
 
@@ -67,11 +107,10 @@ $(function() {
   var showNameTemplate = _.template($('#nameTemplate').html());
 
   function showRippler(rippler) {
-    console.log('show rippler');
     $('#centerContainer').html(showNameTemplate(rippler.toJSON()));
     qrCode.makeCode(rippler.get('address'));
-    rippler.fetchBalances(); 
-    rippler.fetchHistory(); 
+    rippler.fetchBalances().complete(accountBalancesView.render.bind(accountBalancesView));
+    rippler.fetchHistory().complete(accountHistoryView.render.bind(accountHistoryView));
   }
 
   $('form').on('submit', handleSubmit);
@@ -83,6 +122,14 @@ $(function() {
   }
 
   Backbone.history.start({ pushState: true });
+
+  $('#balancesTitle').on('click', function(event) {
+    $('#balances li').toggle();
+  });
+
+  $('#historyTitle').on('click', function(event) {
+    $('#history li').toggle();
+  });
 
 //////////////////////////////////////////////////////
 //                  WEBSOCKETS                      // 
