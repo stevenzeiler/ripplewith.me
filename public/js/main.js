@@ -108,7 +108,7 @@ $(function() {
 
   function showRippler(rippler) {
     $('#centerContainer').html(showNameTemplate(rippler.toJSON()));
-    qrCode.makeCode(rippler.get('address'));
+    qrCode.makeCode('ripple://'+rippler.get('address'));
     rippler.fetchBalances().complete(accountBalancesView.render.bind(accountBalancesView));
     rippler.fetchHistory().complete(accountHistoryView.render.bind(accountHistoryView));
   }
