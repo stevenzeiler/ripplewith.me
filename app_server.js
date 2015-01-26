@@ -4,6 +4,7 @@ var app = express();
 var http = require('superagent');
 
 var RIPPLE_REST_URL = process.env.RIPPLE_REST_URL || 'https://api.ripple.com';
+var PORT            = process.env.PORT            || 5000;
 
 app.use(express.static(__dirname+'/public'));
 
@@ -37,5 +38,7 @@ app.get('/v1/accounts/:account/payments', function(request, response) {
   });
 });
 
-app.listen(5000);
+app.listen(PORT, function() {
+  console.log('serving http on port', PORT);
+});
 
